@@ -1,0 +1,52 @@
+services:
+    restpie-dev-image:
+        container_name: restpie-dev
+        build:
+            dockerfile: Dockerfile
+        hostname: localhost
+        ports:
+            - '8443:8443'
+            - '443:443'
+            - '80:80'
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        image: restpie-dev-image
+        depends_on:
+            - postgres
+            - redis
+        links:
+            - postgres
+            - redis
+        volumes:
+            - restpie:/app
+            
+    redis:
+        container_name: redis
+        image: redis:5
+        hostname: localhost
+        ports:
+            - '6379:6379'
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        volumes:
+            - restpie:/data/redis
+        
+    postgres:
+        container_name: pos-restpie
+        image: postgres:12
+        environment: 
+            - POSTGRES_HOST_AUTH_METHOD=trust
+            - POSTGRES_DB=tmdb
+            - POSTGRES_USER=tm
+            - POSTGRES_PASSWORD=test
+        hostname: localhost
+        ports:
+            - "5432:5432"
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        volumes:
+            - restpie:/data/postgres
+        
+volumes:
+    restpie:
+        driver: local
