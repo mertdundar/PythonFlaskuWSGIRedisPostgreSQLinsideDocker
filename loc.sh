@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# Show user stats (commits, files modified, insertions, deletions, and total
-# lines modified) for a repo
+# Show user stats (commits, files modified, insertions, deletions, total
+# lines modified, and total lines added overall) for a repo
 
 git_log_opts=( "$@" )
 
@@ -18,6 +18,7 @@ git log "${git_log_opts[@]}" --format='author: %ae' --numstat --no-merges \
                 insertions[author] += $1;
                 deletions[author] += $2;
                 total[author] += $1 + $2;
+				totalAdded[author] += $1 - $2;
                 # if this is the first time seeing this file for this
                 # author, increment their file count
                 author_file = author ":" $3;
@@ -29,20 +30,20 @@ git log "${git_log_opts[@]}" --format='author: %ae' --numstat --no-merges \
         }
         END {
             # Print a header
-            printf("%-30s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n",
+            printf("%-50s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n",
                    "Email", "Commits", "Files",
-                   "Insertions", "Deletions", "Total Lines");
-            printf("%-30s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n",
+                   "Insertions", "Deletions", "Total Lines", "Total Lines Added");
+            printf("%-50s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n",
                    "-----", "-------", "-----",
-                   "----------", "---------", "-----------");
+                   "----------", "---------", "-----------", "-----------");
             
             # Print the stats for each user, sorted by total lines
             n = asorti(total, sorted_emails, "@val_num_desc");
             for (i = 1; i <= n; i++) {
                 email = sorted_emails[i];
-                printf("%-30s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n",
+                printf("%-50s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n",
                        email, commits[email], files[email],
-                       insertions[email], deletions[email], total[email]);
+                       insertions[email], deletions[email], total[email], totalAdded[email]);
             }
         }
 '
