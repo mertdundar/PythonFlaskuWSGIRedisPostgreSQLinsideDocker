@@ -202,6 +202,12 @@ So how do you get started with your own project? I suggest to take this route:
   * create tests
 
 
+Line of Code Scripts
+-----------------------
+    # Script usage:
+    loc.sh --before="11.06.2023" --after="10.04.2023" --perl-regexp --invert-grep --author='(Author1|Author2|Author3)'
+
+
 Run locally with Docker
 -----------------------
 
@@ -267,16 +273,16 @@ To start and stop these docker instances, invoke:
     docker stop pos-restpie
     docker stop restpie-dev
 
-Or you can use the docker-compose file to automatically run the environment including the Flask-based App, Redis and PostgreSQL
+Or you can use the docker-compose file to automatically run the environment including the Flask-based App, Redis and PostgreSQL:
 
-  # move to the docker-compose.yml file's directory and then run the docker compose command
-  docker compose up --build -d
+    # move to the docker-compose.yml file's directory and then run the docker compose command
+    docker compose up --build -d
 
-  # activate the uuid extension
-  docker exec -it pos-restpie psql -U tm -d tmdb -c 'create extension "uuid-ossp"'
+    # activate the uuid extension
+    docker exec -it pos-restpie psql -U tm -d tmdb -c 'create extension "uuid-ossp"'
 
-  # create the initial database schema for postgresql
-  docker exec -it restpie-dev bash -l -c 'python /app/scripts/dbmigrate.py'
+    # create the initial database schema for postgresql
+    docker exec -it restpie-dev bash -l -c 'python /app/scripts/dbmigrate.py'
 
 If you don't want to use docker, you can install Redis, PostgreSQL, python3
 and the required python libs on your local machine too. On OSX,
