@@ -2,13 +2,16 @@
 #
 # Show user stats (commits, files modified, insertions, deletions, total
 # lines modified, and total lines added overall) for a repo
+# excluded files DO NOT change the commit number, only the files and lines 
+# modified are affected by excluded files
 
 git_log_opts=( "$@" )
 
 git log "${git_log_opts[@]}" --format='author: %ae' --numstat --no-merges \
-    | tr '[A-Z]' '[a-z]' \
+	| tr '[A-Z]' '[a-z]' \
     | grep -v '^$' \
     | grep -v '^-' \
+	| grep -v -E '*.py|*.sh|*.yml|*.html|*.txt|*.crt|*.csr|*.key|*.ico|*.service|*.ini|*.json|*.jpg|*.md' \
     | awk '
         {
             if ($1 == "author:") {
