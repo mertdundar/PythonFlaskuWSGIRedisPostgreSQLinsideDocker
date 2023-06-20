@@ -15,6 +15,7 @@ from webutil import app, login_required, get_myself
 import logging
 log = logging.getLogger("api.movies")
 
+import json
 
 @app.route('/api/movies/', methods = ['GET'])
 def movie_query():
@@ -46,6 +47,8 @@ def movie_create():
     """Creates a movie and returns it."""
 
     input = request.json
+    print(type(input))
+    print(input)
     input.pop("id", 0) # ignore id if given, is set by db
 
     m = dict_to_model(db.Movie, input)
@@ -55,6 +58,20 @@ def movie_create():
 
     return jsonify(m), 201
 
+def movie_create_internal(stringGiven):
+    """Creates a movie and returns it."""
+    print(type(stringGiven))
+    input = json.loads(stringGiven)
+    print(type(input))
+    print(input)
+    #input.pop("id", 0) # ignore id if given, is set by db
+
+    m = dict_to_model(db.Movie, input)
+    m.modified = m.created = util.utcnow()
+    m.creator = db.get_user('e6b94661-e83b-4403-8b3b-4e0a57b91bfb')
+    m.save()
+
+    return 0
 
 @app.route('/api/movies/<id>', methods = ['PUT'])
 @login_required(role='editor')

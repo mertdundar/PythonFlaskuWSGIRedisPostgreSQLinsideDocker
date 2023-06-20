@@ -53,9 +53,13 @@ def get_myself():
         return None
 
     if hasattr(g, "MYSELF"):
+        print(type(g.MYSELF))
+        print(g.MYSELF)
         return g.MYSELF # use cache
     else:
         g.MYSELF = db.get_user(session["userid"])
+        print(type(g.MYSELF))
+        print(g.MYSELF)
         return g.MYSELF
 
 def error_reply(errmsg, httpcode=400):

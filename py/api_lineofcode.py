@@ -3,6 +3,7 @@ from playhouse.shortcuts import dict_to_model, update_model_from_dict
 
 import db
 import util
+import bgtasks
 from webutil import app, login_required, get_myself
 
 import logging
@@ -13,7 +14,8 @@ import git
 
 @app.route('/api/loc', methods = ['GET'])#, 'OPTIONS'])
 def loc_query():
-    repoLoc = "LoC Test"
+    print("test")
+    repoLoc = "LoC Testt"
     #if request.method == "OPTIONS": # CORS preflight
         #return _build_cors_preflight_response(jsonify(repoLoc), 200)
     #elif request.method == "GET":
@@ -24,6 +26,7 @@ def loc_query():
         #branch = input.get("creator")
         #return jsonify(repoLoc), 200
     #return _build_cors_preflight_response(jsonify(repoLoc), 200)
+    bgtasks.getLoC.spool(repoURL="https://github.com/mertdundar/PythonFlaskuWSGIRedisPostgreSQLinsideDocker.git", branch="main", members="mertdundar,mertdna")
     return jsonify(repoLoc), 200
     
 def _build_cors_preflight_response(payload, status_code):

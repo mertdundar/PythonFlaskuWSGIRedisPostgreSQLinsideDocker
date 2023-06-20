@@ -13,6 +13,7 @@ import webutil
 import config
 import time
 import uwsgi
+import api_movies
 
 import logging
 log = logging.getLogger("bgtasks")
@@ -40,3 +41,26 @@ def send_email(*args, **kwargs):
         # N secs, configured in uwsgi.ini: spooler-frequency
         return uwsgi.SPOOL_OK
 
+@spool(pass_arguments=True)
+def getLoC(*args, **kwargs):
+    """A background worker that is executed by spooling arguments to it."""
+    print("getLoC function spool trigerred")
+    log.info("getLoC started, got arguments: {} {}".format(args, kwargs))
+
+    try:
+        log.info("getting line of code...")
+        print(args)
+        input = '{"title":"LoC Movie", "director":"Mert Dundar"}'
+        # do the stuff...
+        time.sleep(13)
+        api_movies.movie_create_internal(input)
+
+        log.info("processing done!")
+
+    except:
+        log.exception("getLoC")
+
+        # returning SPOOL_OK here signals to uwsgi to not retry this task
+        # if the exception propagates up, uwsgi will call us again in
+        # N secs, configured in uwsgi.ini: spooler-frequency
+        return uwsgi.SPOOL_OK
